@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通勤计时工具 · 产品案例</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #3a3530;
+    --paper: #f5f0e8;
+    --warm: #e8dcc8;
+    --accent: #95A89D;
+    --accent2: #95A89D;
+    --muted: #8a8078;
+    --pixel: #3d3530;
+    --tag-bg: #95A89D;
+    --tag-text: #fff;
+    --card-bg: #fffdf9;
+    --card-shadow: 0 2px 16px rgba(60,52,44,0.07), 0 1px 4px rgba(60,52,44,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ── PIXEL TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='1' height='1' fill='%231a1410' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 2rem;
+    border-bottom: 1px solid var(--warm);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--warm) 1px, transparent 1px),
+      linear-gradient(90deg, var(--warm) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.6;
+  }
+
+  .hero-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-nav .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    letter-spacing: 0.08em;
+  }
+
+  .hero-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    z-index: 1;
+    padding: 4rem 0 2rem;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 16ch;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title .accent { color: var(--accent); }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 52ch;
+    line-height: 1.75;
+    border-left: 3px solid var(--accent);
+    padding-left: 1.25rem;
+    font-style: italic;
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pixel-deco {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    opacity: 0.5;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── AUTHOR STRIP ── */
+  .author-strip {
+    background: var(--card-bg);
+    color: var(--ink);
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--warm);
+    box-shadow: var(--card-shadow);
+  }
+
+  .author-strip .item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .author-strip .item-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.8;
+  }
+
+  .author-strip .item-value {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  /* ── SECTION LAYOUT ── */
+  .section {
+    padding: 5rem 2rem;
+    border-bottom: 1px solid var(--warm);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    min-width: 3rem;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .section-title .sub {
+    font-size: 0.8em;
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  /* ── WHY SECTION ── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .why-text p {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: #2a2420;
+  }
+
+  .why-text strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .insight-card {
+    background: var(--card-bg);
+    color: var(--ink);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--warm);
+  }
+
+  .insight-card::before {
+    content: '💡';
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    font-size: 4rem;
+    opacity: 0.12;
+  }
+
+  .insight-card .insight-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .insight-card p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    font-style: italic;
+    color: #4a4440;
+  }
+
+  /* ── V1 SECTION ── */
+  .mvp-banner {
+    background: var(--accent);
+    color: white;
+    padding: 1.25rem 2rem;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .mvp-banner .mvp-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  .mvp-banner .mvp-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .feature-card {
+    border: 1px solid var(--warm);
+    padding: 1.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+  }
+
+  .feature-card:hover {
+    box-shadow: 0 6px 24px rgba(60,52,44,0.10);
+    transform: translateY(-2px);
+  }
+
+  .feature-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* SCREENSHOT PLACEHOLDER */
+  .screenshot-zone {
+    background: var(--warm);
+    border: 2px dashed #b8a898;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    min-height: 180px;
+  }
+
+  .screenshot-box {
+    background: white;
+    border: 1px solid #d0c4b4;
+    padding: 0;
+    width: 120px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 4px 4px 0 #d0c4b4;
+  }
+
+  .screenshot-box .ph-icon { font-size: 2rem; }
+  .screenshot-box .ph-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .screenshot-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  /* DECISION TABLE */
+  .decision-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.9rem;
+  }
+
+  .decision-table th {
+    background: var(--accent);
+    color: white;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .decision-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--warm);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .decision-table tr:nth-child(even) td {
+    background: rgba(0,0,0,0.02);
+  }
+
+  .decision-table td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--accent2);
+  }
+
+  /* LIMIT PILLS */
+  .limit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .limit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--card-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    box-shadow: var(--card-shadow);
+  }
+
+  .limit-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .limit-text { font-size: 0.9rem; line-height: 1.65; color: #2a2420; }
+
+  /* ── V2 SECTION ── */
+  .v2-section { background: var(--paper); color: var(--ink); }
+  .v2-section .section { max-width: 1100px; margin: 0 auto; }
+  .v2-section .section-title { color: var(--ink); }
+  .v2-section .section-num { color: var(--accent); }
+
+  .why-iterate {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #3a3028;
+    margin-bottom: 2.5rem;
+    max-width: 65ch;
+  }
+
+  .why-iterate em {
+    color: var(--ink);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .v2-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .v2-feature {
+    background: var(--card-bg);
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--warm);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .v2-feature:hover {
+    box-shadow: 0 6px 24px rgba(60,52,44,0.10);
+    transform: translateY(-2px);
+  }
+
+  .v2-feature .v2-feat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.15em;
+  }
+
+  .v2-feature .v2-feat-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .v2-feature .v2-feat-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .v2-feature .v2-feat-items li {
+    font-size: 0.82rem;
+    color: var(--muted);
+    padding-left: 0.75rem;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .v2-feature .v2-feat-items li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #b0a898;
+    font-size: 0.75rem;
+  }
+
+  .tech-insight {
+    background: var(--card-bg);
+    border-left: 3px solid var(--accent);
+    padding: 1.75rem 2rem;
+    margin: 2.5rem 0;
+    border-radius: 0 12px 12px 0;
+    box-shadow: var(--card-shadow);
+  }
+
+  .tech-insight .ti-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .tech-insight p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #4a4440;
+    margin-bottom: 0.75rem;
+  }
+
+  .tech-insight p:last-child { margin-bottom: 0; }
+
+  .bug-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .bug-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .bug-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    background: var(--accent);
+    color: #fff;
+    padding: 0.15rem 0.4rem;
+    white-space: nowrap;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  /* ── COMPARE SECTION ── */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .compare-table thead th {
+    padding: 1rem;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--warm);
+  }
+
+  .compare-table thead th:first-child { text-align: left; }
+  .compare-table thead th:nth-child(2) { background: #eee8d8; }
+  .compare-table thead th:nth-child(3) { background: var(--accent); color: white; }
+
+  .compare-table tbody td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--warm);
+    vertical-align: middle;
+  }
+
+  .compare-table tbody td:first-child {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .compare-table tbody td:nth-child(2) {
+    text-align: center;
+    background: rgba(240,232,216,0.3);
+    color: var(--muted);
+  }
+
+  .compare-table tbody td:nth-child(3) {
+    text-align: center;
+    background: rgba(149,168,157,0.06);
+    font-weight: 500;
+    color: var(--accent2);
+  }
+
+  /* ── REFLECTION ── */
+  .reflection-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .reflection-card {
+    padding: 2rem;
+    border: 1px solid var(--warm);
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+  }
+
+  .reflection-card .r-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--warm);
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    line-height: 1;
+  }
+
+  .reflection-card .r-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+
+  .reflection-card .r-text {
+    font-size: 0.88rem;
+    color: #4a4440;
+    line-height: 1.7;
+    position: relative;
+  }
+
+  .next-step {
+    background: var(--card-bg);
+    color: var(--ink);
+    padding: 2rem 2.5rem;
+    margin-top: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--warm);
+    border-left: 4px solid var(--accent);
+  }
+
+  .next-step .ns-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .next-step p {
+    font-size: 1rem;
+    line-height: 1.8;
+    font-style: italic;
+    color: #4a4440;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--card-bg);
+    color: var(--ink);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-top: 1px solid var(--warm);
+    box-shadow: 0 -2px 12px rgba(60,52,44,0.04);
+  }
+
+  footer .f-left {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  footer .f-right {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+
+  /* ── DIVIDER ── */
+  .pixel-divider {
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    opacity: 0.4;
+    letter-spacing: 0.3em;
+    margin: 2rem 0;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .why-grid, .reflection-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 2.5rem; }
+    .features-grid { grid-template-columns: 1fr; }
+    .v2-features { grid-template-columns: 1fr; }
+  }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow { animation: fadeUp 0.6s ease both; }
+  .hero-title { animation: fadeUp 0.6s 0.1s ease both; }
+  .hero-subtitle { animation: fadeUp 0.6s 0.2s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <nav class="hero-nav">
+    <span class="label">作品集 · Portfolio</span>
+    <div class="tag-row">
+      <span class="tag">产品案例</span>
+      <span class="tag">微信小程序</span>
+      <span class="tag">V1→V2</span>
+    </div>
+  </nav>
+
+  <div class="hero-center">
+    <div class="hero-eyebrow">▶ 通勤计时工具 · 个人项目</div>
+    <h1 class="hero-title">消解<br>通勤<br><span class="accent">时间焦虑</span></h1>
+    <p class="hero-subtitle">
+      一款专注打工人早晨通勤的极简效率工具。
+      通过精细到节点的微操记录，为用户提供精准的出门「安心丸」。
+    </p>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="pixel-deco">█░█ █░█ █░░ ░░░ █░░ ░░░ █░░</div>
+    <div class="pixel-deco">独立开发 · AI辅助编程 · Cursor</div>
+  </div>
+</section>
+
+<!-- ═══ AUTHOR STRIP ═══ -->
+<div class="author-strip">
+  <div class="item">
+    <span class="item-label">背景</span>
+    <span class="item-value">应用心理学本科</span>
+  </div>
+  <div class="item">
+    <span class="item-label">目标岗位</span>
+    <span class="item-value">产品经理 / 产品运营</span>
+  </div>
+  <div class="item">
+    <span class="item-label">技术栈</span>
+    <span class="item-value">微信小程序原生 · Cursor</span>
+  </div>
+  <div class="item">
+    <span class="item-label">项目状态</span>
+    <span class="item-value">V2 · 持续自用中</span>
+  </div>
+</div>
+
+
+<!-- ═══ WHY ═══ -->
+<div style="max-width:1100px; margin: 0 auto;">
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">01 /</span>
+    <h2 class="section-title">为什么做这个<span class="sub">需求发现</span></h2>
+  </div>
+
+  <div class="why-grid">
+    <div class="why-text">
+      <p>项目的起点很朴素——<strong>我自己每天上班都会焦虑</strong>。不是怕迟到，是怕「不知道会不会迟到」。</p>
+      <p>备忘录手打太慢，普通计时器只给总时长，没法告诉我<strong>「现在到底哪个环节超了」</strong>。</p>
+      <p>于是我用 AI 辅助编程，从零独立开发了这款微信小程序——把通勤路径切成可控进度条，让每一步都有数据托底。</p>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">心理学洞察</div>
+      <p>焦虑的本质是对不确定性的失控感。我需要的不是一个闹钟，而是一个能<strong>把不确定切成可控节点</strong>的工具——在路上安心发呆，到站看一眼提示就行。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ V1 ═══ -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">02 /</span>
+    <h2 class="section-title">V1：先跑起来，再说对不对<span class="sub">MVP 阶段</span></h2>
+  </div>
+
+  <div class="mvp-banner">
+    <span class="mvp-tag">MVP PRINCIPLE</span>
+    <span class="mvp-text">先砍掉所有「可以有」，只留「必须有」。固定单条路线 + 6个预设节点，不是偷懒，是有意识地降低技术死角，确保核心体验完整落地。</span>
+  </div>
+
+  <!-- Screenshot zone -->
+  <div class="screenshot-zone">
+    <div class="screenshot-box">
+      <img src="v1-1.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+    </div>
+    <div class="screenshot-box">
+      <img src="v1-2.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+    </div>
+    <div class="screenshot-hint">← 替换为你的小程序截图 →</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 01</div>
+      <div class="feature-name">⏱ 顺序解锁计时</div>
+      <div class="feature-desc">按节点顺序点击，自动记录时间戳并计算相邻差值（如「步行 4 分 32 秒」）</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 02</div>
+      <div class="feature-name">🔄 防假死动态读秒</div>
+      <div class="feature-desc">基于系统时间戳计算，切后台不丢精度——「如果卡住了我会知道」</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 03</div>
+      <div class="feature-name">🗺 场景化即时提示</div>
+      <div class="feature-desc">到达特定节点后激活「本面出 / 对面出」导航文本，只在需要时出现</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 04</div>
+      <div class="feature-name">↩ 防误触撤销</div>
+      <div class="feature-desc">支持回退上一步并清除对应记录</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 05</div>
+      <div class="feature-name">📋 弹窗结算 + 静默存档</div>
+      <div class="feature-desc">点击终点弹出完整数据卡片，同步写入本地历史。强化完成仪式感，像打通游戏关卡。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-num">FEAT · 06</div>
+      <div class="feature-name">📜 极简历史记录</div>
+      <div class="feature-desc">纯文本列表，倒序展示，不可编辑——「错了就错了」，符合用完即走原则</div>
+    </div>
+  </div>
+
+  <div class="pixel-divider">░░░ DESIGN DECISIONS ░░░</div>
+
+  <table class="decision-table">
+    <thead>
+      <tr>
+        <th>设计决策</th>
+        <th>背后的理由</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>固定路线，不做自定义</td>
+        <td>降低技术复杂度，确保 MVP 快速可用，避免技术死角</td>
+      </tr>
+      <tr>
+        <td>历史记录不可改</td>
+        <td>符合「用完即走」原则，规避编辑态逻辑复杂度</td>
+      </tr>
+      <tr>
+        <td>弹窗式结算</td>
+        <td>强化完成仪式感，像打通游戏关卡——情绪设计</td>
+      </tr>
+      <tr>
+        <td>微信原生而非网页</td>
+        <td>愿意承受配置摩擦，换取最流畅的原生体验</td>
+      </tr>
+      <tr>
+        <td>手动截图，不做自动生图</td>
+        <td>规避跨设备渲染与相册权限 Bug，0 开发风险</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pixel-divider" style="margin-top:3rem;">░░░ V1 LIMITS ░░░</div>
+
+  <div class="limit-list">
+    <div class="limit-item">
+      <div class="limit-icon">🚧</div>
+      <div class="limit-text"><strong>只有一条路线</strong>——现实通勤有变数（雨天走地下通道、换出口、偶尔绕路），V1 完全无法应对</div>
+    </div>
+    <div class="limit-item">
+      <div class="limit-icon">📊</div>
+      <div class="limit-text"><strong>无多路线对比</strong>——每天只能看「今天用了多久」，无法横向比较不同策略，这才是真正的核心场景</div>
+    </div>
+    <div class="limit-item">
+      <div class="limit-icon">🎨</div>
+      <div class="limit-text"><strong>UI 经历两轮试错</strong>——从现代扁平渐变，到 90 年代高饱和复古，最终妥协到低饱和怀旧像素风</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ═══ V2 ═══ -->
+<div class="v2-section">
+<div style="max-width:1100px; margin: 0 auto;">
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">03 /</span>
+    <h2 class="section-title">V1 → V2：从 MVP 到核心业务<span class="sub" style="color:#8a8078;">需求驱动迭代</span></h2>
+  </div>
+
+  <p class="why-iterate">
+    不是因为用户抱怨，是因为<em>我自己用着不够用</em>。<br>
+    真实通勤不是一条线，是一张图。单一路线的设计在概念验证阶段够用，但无法支撑「每天对比、选最优策略」这个<em>真正的核心场景</em>。
+  </p>
+
+  <!-- Screenshot zone -->
+  <div class="screenshot-zone">
+    <div class="screenshot-box">
+      <img src="v2-3.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+    </div>
+    <div class="screenshot-box">
+      <img src="v2-1.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+    </div>
+    <div class="screenshot-box">
+      <img src="v2-2.png" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+    </div>
+    <div class="screenshot-hint">← 替换为 V1/V2 并排对比截图 →</div>
+  </div>
+
+  <div class="v2-features">
+    <div class="v2-feature">
+      <div class="v2-feat-num">NEW · 01</div>
+      <div class="v2-feat-title">路线架构重构</div>
+      <ul class="v2-feat-items">
+        <li>支持自定义多条路线，独立路线库管理</li>
+        <li>「横线搭积木」式节点拼装</li>
+        <li>完整 CRUD：设为当前 / 重命名 / 删除</li>
+      </ul>
+    </div>
+    <div class="v2-feature">
+      <div class="v2-feat-num">NEW · 02</div>
+      <div class="v2-feat-title">动态适配首页</div>
+      <ul class="v2-feat-items">
+        <li>时间轴根据节点数量动态渲染</li>
+        <li>卡片新增节点序列文本摘要</li>
+        <li>像素风方向虚线连接节点</li>
+      </ul>
+    </div>
+    <div class="v2-feature">
+      <div class="v2-feat-num">NEW · 03</div>
+      <div class="v2-feat-title">交互防呆升级</div>
+      <ul class="v2-feat-items">
+        <li>操作台下沉，适配右手热区</li>
+        <li>保存路线自动跳转首页</li>
+        <li>未命名路线自动填充编号</li>
+      </ul>
+    </div>
+    <div class="v2-feature">
+      <div class="v2-feat-num">NEW · 04</div>
+      <div class="v2-feat-title">情绪备忘</div>
+      <ul class="v2-feat-items">
+        <li>历史记录页开放自定义情绪输入</li>
+        <li>数据不只是数字，有温度</li>
+        <li>「在路上」取代「上班」——去班味</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tech-insight">
+    <div class="ti-label">PM 视角 · 技术亮点</div>
+    <p>全程基于自然语言指令协同 Cursor 进行 AI 辅助编程。核心挑战不在于「写代码」，而在于<strong>准确描述产品行为、拆解逻辑边界、复现和定位 Bug</strong>——这与 PM 的核心能力高度重合。</p>
+    <div class="bug-list">
+      <div class="bug-item">
+        <span class="bug-tag">BUG 01</span>
+        <span>白屏 Bug：定位到跨页面 Storage 状态未级联更新，重构数据流转逻辑</span>
+      </div>
+      <div class="bug-item">
+        <span class="bug-tag">BUG 02</span>
+        <span>视口锁死 / 内容溢出：引入 min-height: 100vh + 全面屏安全区适配</span>
+      </div>
+      <div class="bug-item">
+        <span class="bug-tag">BUG 03</span>
+        <span>「平行宇宙 Bug」：在两个本地文件夹之间改错版本，深刻认识版本管理的必要性，确认接入 Git 的优先级</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+</div>
+
+<!-- ═══ COMPARE ═══ -->
+<div style="max-width:1100px; margin: 0 auto;">
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">04 /</span>
+    <h2 class="section-title">迭代对比总览</h2>
+  </div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>维度</th>
+        <th>V1</th>
+        <th>V2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>路线数量</td>
+        <td>固定 1 条</td>
+        <td>自定义多条</td>
+      </tr>
+      <tr>
+        <td>节点数量</td>
+        <td>固定 6 个</td>
+        <td>动态任意长度</td>
+      </tr>
+      <tr>
+        <td>路线管理</td>
+        <td>无</td>
+        <td>完整 CRUD</td>
+      </tr>
+      <tr>
+        <td>历史记录</td>
+        <td>只读纯文本</td>
+        <td>支持情绪备忘输入</td>
+      </tr>
+      <tr>
+        <td>UI 适配</td>
+        <td>固定布局</td>
+        <td>动态渲染 + 全面屏适配</td>
+      </tr>
+      <tr>
+        <td>文案基调</td>
+        <td>「上班 / 通勤」</td>
+        <td>「在路上 / 出行」</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══ REFLECTION ═══ -->
+<section class="section" style="border-bottom: none;">
+  <div class="section-header">
+    <span class="section-num">05 /</span>
+    <h2 class="section-title">反思与下一步</h2>
+  </div>
+
+  <div class="reflection-grid">
+    <div class="reflection-card">
+      <div class="r-num">01</div>
+      <div class="r-title">需求不是调研出来的，是活出来的</div>
+      <div class="r-text">自用倒逼了最真实的痛点发现。没有用户访谈，但有每天真实使用的数据和体感。</div>
+    </div>
+    <div class="reflection-card">
+      <div class="r-num">02</div>
+      <div class="r-title">设计决策需要有理由</div>
+      <div class="r-text">每一个「砍掉」和「保留」都对应了具体的使用场景和约束，而不是凭感觉。</div>
+    </div>
+    <div class="reflection-card">
+      <div class="r-num">03</div>
+      <div class="r-title">迭代要有主线</div>
+      <div class="r-text">V2 的所有改动都围绕「多路线策略」这一个核心需求展开，没有发散，没有为了加功能而加功能。</div>
+    </div>
+    <div class="reflection-card" style="border-left: 3px solid var(--warm);">
+      <div class="r-num" style="color: var(--warm);">⚠</div>
+      <div class="r-title" style="color: var(--muted);">诚实的局限</div>
+      <div class="r-text" style="color: var(--muted);">没有真实多用户数据，无法验证「通勤焦虑」是否是普遍痛点，也无法用数据衡量版本迭代的实际效果。</div>
+    </div>
+  </div>
+
+  <div class="next-step">
+    <div class="ns-label">▶ 如果有真实用户，下一步想验证的假设</div>
+    <p>多路线对比功能，是否真的降低了用户的决策焦虑——而不只是增加了操作步骤？</p>
+  </div>
+</section>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="f-left">
+    项目独立完成 · 微信小程序原生开发 · AI 辅助编程（Cursor）<br>
+    V1 上线 → V2 迭代 · 持续自用中
+  </div>
+  <div class="f-right">█░</div>
+</footer>
+
+</body>
+</html>
