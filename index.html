@@ -366,8 +366,8 @@
     background: white;
     border: 1px solid #d0c4b4;
     padding: 0;
-    width: 120px;
-    height: 200px;
+    width: 200px;
+    height: 333px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -754,6 +754,25 @@
     .hero-title { font-size: 2.5rem; }
     .features-grid { grid-template-columns: 1fr; }
     .v2-features { grid-template-columns: 1fr; }
+    .screenshot-box {
+      width: 150px;
+      height: 250px;
+    }
+    .screenshot-zone {
+      gap: 1rem;
+      padding: 2rem 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .screenshot-box {
+      width: 120px;
+      height: 200px;
+    }
+    .screenshot-zone {
+      gap: 0.75rem;
+      padding: 1.5rem 0.5rem;
+    }
   }
 
   /* ANIMATION */
